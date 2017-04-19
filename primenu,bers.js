@@ -1,6 +1,13 @@
-// little hack
-let cw = console.log;
+function displayResults(name, mr_1_alg, mr_2_alg, mr_3_alg, mr_4_alg){
+	console.log('------------------')
+	console.log('word is ' + name)
+	console.log('method 1 (1to26) 	|| ', name ,' => ', mr_1_alg, ' : ', isPrime(mr_1_alg))
+	console.log('method 2 (1379) 	|| ', name ,' => ', mr_2_alg, ' : ', isPrime(mr_2_alg))
+	console.log('method 3 (primes_1) || ', name ,' => ', mr_3_alg, ' : ', isPrime(mr_3_alg))
+	console.log('method 4 (primes_2) || ', name ,' => ', mr_4_alg, ' : ', isPrime(mr_4_alg))
+}
 
+// aka db of tables
 const alphabets = {
 	"en" : {
 		"1to26" : 		{"a":1,"b":2,"c":3,"d":4,"e":5,"f":6,"g":7,"h":8,"i":9,"j":10,"k":11,"l":12,"m":13,"n":14,"o":15,"p":16,"q":17,"r":18,"s":19,"t":20,"u":21,"v":22,"w":23,"x":24,"y":25,"z":26},
@@ -30,6 +37,8 @@ const isPrime =  number => {
     return number > 1;
 }
 
+// rounds a number to 1 or 3 or 7 or 9
+// you need this, coz if number ends with 2 ~> it's 100% not prime
 const RoundTo1379 = n => {
 	//						   last digit
 	while(![1,3,7,9].includes( (n % 10) )){
@@ -38,14 +47,16 @@ const RoundTo1379 = n => {
 	return n;
 }
 
-//		'j'	=>  20	or 18 or 3 or ...							язык languege мова
-const CharToNum = (cha, alpha_version="1379", lang='en') => alphabets[lang][alpha_version][cha];
+//		'j'	=>  num
+const CharToNum = (cha, alpha_version, langa='en') => alphabets[langa][alpha_version][cha];
 
-//		'245433'  => num
-const ArrOfCharsCodedxToNum_Adding = chars => chars.reduce( (prev,curr) => curr + prev, 0);
+//++++++++++++++++++++++++++++++++++
+// 						ProccMethod
+//	(or how to convert [array of nums] to big number)
+//					'245433'  => num
+const _adding = chars => chars.reduce( (prev,curr) => curr + prev, 0);
 
-
-const ArrOfCharsCodedxToNum_Mult_v2 = str =>
+const _mult2 = str =>
 	str
 	.reduce( (prev,curr) => {
 
@@ -57,7 +68,8 @@ const ArrOfCharsCodedxToNum_Mult_v2 = str =>
 			return curr * prev
 		}
 	}, 1);
-const ArrOfCharsCodedxToNum_Mult_v1 = str =>
+
+const _mult1 = str =>
 	str
 	.reduce( (prev,curr) => {
 
@@ -67,66 +79,55 @@ const ArrOfCharsCodedxToNum_Mult_v1 = str =>
 			return curr * prev
 		}
 	}, 1);
-const ArrOfCharsCodedxToNum_concatSTR = arr =>
-	//			Plaintext => big number
-							arr
-							.join('');
 
+	  // slow, coz concat num gives a really big num
 
-function Processss(name){
+const _concat = str => str.join('');
 
-	let chars = name.toLowerCase().split('');
+//++++++++++++++++++++++++++++++++++
 
-	let mr_1_alg = ArrOfCharsCodedxToNum_Adding(
-		chars
-		.map( cha => CharToNum(cha, '1to26') )
-		)
+// main 'Proccess' function
+// api:  word  =>  display output in console
 
-	let mr_2_alg = ArrOfCharsCodedxToNum_Adding(
-		chars
-		.map( cha => CharToNum(cha, '1379') )
-		)
-
-	let mr_3_alg = ArrOfCharsCodedxToNum_Adding(
-		chars
-		.map( cha => CharToNum(cha, 'primes_1') )
-		)
-
-	let mr_4_alg = ArrOfCharsCodedxToNum_Adding(
-		chars
-		.map( cha => CharToNum(cha, 'primes_2') )
-		)
-
-	cw('------------------')
-	cw('word is ' + name)
-	cw('method 1 (1to26) 	=> ', RoundTo1379(mr_1_alg), 'boool : ', isPrime(RoundTo1379(mr_1_alg)))
-	cw('method 2 (1379) 	=> ', RoundTo1379(mr_2_alg), 'boool : ', isPrime(RoundTo1379(mr_2_alg)))
-	cw('method 3 (primes_1) => ', RoundTo1379(mr_3_alg), 'boool : ', isPrime(RoundTo1379(mr_3_alg)))
-	cw('method 4 (primes_2) => ', RoundTo1379(mr_4_alg), 'boool : ', isPrime(RoundTo1379(mr_4_alg)))
-}
-
-function Processss2(name){
+function Proccess(name, lang, ProccMethod){
+	// name - is your word
+	// lang - language of your word
+	// ProccMethod - magic :D
 
 	let chars = name.toLowerCase().split('');
 
-	let mr_1_alg = ArrOfCharsCodedxToNum_concatSTR(chars.map( cha => CharToNum(cha, '1to26') ))
+	let mr_1_alg = RoundTo1379(
+					ProccMethod(
+					chars.map( cha => CharToNum(cha, '1to26', lang))));
 
-	let mr_2_alg = ArrOfCharsCodedxToNum_concatSTR(chars.map( cha => CharToNum(cha, '1379') ))
+	let mr_2_alg = RoundTo1379(
+					ProccMethod(
+					chars.map( cha => CharToNum(cha, '1379', lang))));
 
-	let mr_3_alg = ArrOfCharsCodedxToNum_concatSTR(chars.map( cha => CharToNum(cha, 'primes_1') ))
+	let mr_3_alg = RoundTo1379(
+					ProccMethod(
+					chars.map( cha => CharToNum(cha, 'primes_1', lang))));
 
-	let mr_4_alg = ArrOfCharsCodedxToNum_concatSTR(chars.map( cha => CharToNum(cha, 'primes_2') ))
+	let mr_4_alg = RoundTo1379(
+					ProccMethod(
+					chars.map( cha => CharToNum(cha, 'primes_2', lang))));
 
-	cw('------------------')
-	cw('word is ' + name)
-	cw('method 1 (1to26) 	|| ', name ,' => ', RoundTo1379(mr_1_alg), ' : ', isPrime(RoundTo1379(mr_1_alg)))
-	cw('method 2 (1379) 	|| ', name ,' => ', RoundTo1379(mr_2_alg), ' : ', isPrime(RoundTo1379(mr_2_alg)))
-	cw('method 3 (primes_1) || ', name ,' => ', RoundTo1379(mr_3_alg), ' : ', isPrime(RoundTo1379(mr_3_alg)))
-	cw('method 4 (primes_2) || ', name ,' => ', RoundTo1379(mr_4_alg), ' : ', isPrime(RoundTo1379(mr_4_alg)))
+	displayResults(name, mr_1_alg, mr_2_alg, mr_3_alg, mr_4_alg);
+	
 }
+//=====================================================================================
+//=====================================================================================
 
+// Usage:
+
+// Create your words
+// space aka ' ' not allowed in word!
 const tests = ['HelloWrold','SmallBig','JojiJo','Test','Text','Prime', 'fluffikin']
 
-//							word without ' ' (spaces)
-// tests.map( word =>  Processss(word) );
-tests.map( word =>  Processss2(word) );
+// call .map on your words, and pass each word to Proccess(). Example:
+//
+//									'en' ,'ru', 'ua' available
+//									 V
+tests.map( word =>  Proccess(word, 'en', _mult1) );
+//										     V
+//										  _mult1, _mult2, _adding available
